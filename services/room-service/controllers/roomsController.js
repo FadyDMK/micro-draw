@@ -2,8 +2,9 @@ const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
 
 const UserServiceURL = process.env.USER_SERVICE_URL || 'http://localhost:3000';
+const GameEngineURL = process.env.GAME_ENGINE_URL || 'http://localhost:5000';
 
-const rooms = new Map(); // roomId -> {id, name, users: [userId]}
+const rooms = new Map(); // roomId -> {id, name, players: [{id, username}], gameId?: string}
 
 async function tryGet(url) {
     try {
@@ -64,6 +65,25 @@ async function joinRoom(req, res) {
 
     if (room.players.find(u => u.id === user.id)) return res.status(409).send('User already in room');
     room.players.push(user);
+
+    // Auto-create game when room is full (2 players)
+    if (room.players.length === 2 && !room.gameId) {
+        try {
+            const gameResponse = await axios.post(`${GameEngineURL}/games`, {
+                roomId: room.id,
+                players: room.players
+            }, { timeout: 3000 });
+            
+            if (gameResponse.data && gameResponse.data.id) {
+                room.gameId = gameResponse.data.id;
+                console.log(`Game created: ${room.gameId} for room: ${room.id}`);
+            }
+        } catch (error) {
+            console.error('Failed to create game:', error.message);
+            // Continue even if game creation fails - room join still succeeds
+        }
+    }
+
     res.json(room);
 }
 

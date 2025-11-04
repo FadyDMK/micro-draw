@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.post('/games/create', gamesController.createGame);
+app.post('/games', gamesController.createGame);
 app.get('/games/:gameId', gamesController.getGame);
 
 const server = http.createServer(app);
