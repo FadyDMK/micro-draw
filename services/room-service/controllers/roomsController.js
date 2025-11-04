@@ -66,9 +66,9 @@ async function joinRoom(req, res) {
     if (room.players.find(u => u.id === user.id)) return res.status(409).send('User already in room');
     room.players.push(user);
 
-    // Auto-create game when room is full (2 players)
     if (room.players.length === 2 && !room.gameId) {
         try {
+            console.log(`Attempting to create game at: ${GameEngineURL}/games`);
             const gameResponse = await axios.post(`${GameEngineURL}/games`, {
                 roomId: room.id,
                 players: room.players
@@ -80,7 +80,6 @@ async function joinRoom(req, res) {
             }
         } catch (error) {
             console.error('Failed to create game:', error.message);
-            // Continue even if game creation fails - room join still succeeds
         }
     }
 
