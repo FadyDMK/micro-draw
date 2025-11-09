@@ -33,7 +33,14 @@ async function handleMessage(ws, raw) {
         if (!game) return send(ws, {type: 'join-game', success: false, error: 'Game not found'});
         ws.gameId = msg.gameId;
         addSocketToGame(msg.gameId, ws.userId, ws);
-        return send(ws, {type: 'join-game', success: true, gameId: msg.gameId});
+        
+        return send(ws, {
+            type: 'state',
+            success: true,
+            gameId: msg.gameId,
+            state: game.state,
+            players: game.players
+        });
     }
 
     //draw or chat

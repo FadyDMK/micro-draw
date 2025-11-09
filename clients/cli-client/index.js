@@ -1,25 +1,12 @@
-const readline = require('readline');
-const { createInterface } = require('./ui/interface');
-const { connectToGame } = require('./network/wsClient');
-const { read } = require('fs');
+const { showMainMenu } = require('./ui/menu');
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+async function main() {
+    try {
+        await showMainMenu();
+    } catch (err) {
+        console.error('Fatal error:', err.message);
+        process.exit(1);
+    }
+}
 
-console.log("===============Welcome to Micro Draw CLI Client!===============\n");
-
-rl.question("Enter your username: ", (username) => {
-    rl.question("Enter Password: ", (password) => {
-        rl.question("Enter Room ID to join: ", async (roomId) => {
-            console.log(`Connecting as ${username} to room ${roomId}...\n`);
-            try {
-                await connectToGame(username, password, roomId, createInterface());
-            } catch (error) {
-                console.error("Failed to connect to game:", error.message);
-                rl.close();
-            }
-        });
-    });
-});
+main();
