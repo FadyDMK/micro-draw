@@ -6,8 +6,7 @@ function createInterface() {
     const screen = blessed.screen({
         smartCSR: true,
         title: 'Micro Draw - CLI Client',
-        fullUnicode: true,
-        debug: true
+        fullUnicode: true
     });
 
     // Canvas display box (left side - 70% width)
@@ -58,28 +57,22 @@ function createInterface() {
         keys: true
     });
 
-    // Input box (bottom - 20% height)
-    const inputBox = blessed.textbox({
+    // Input box (bottom - 20% height) - Simple box for displaying input
+    const inputBox = blessed.box({
         bottom: 0,
         left: 0,
         width: '100%',
         height: 3,
-        input: true,
-        keys: true,
         border: {
             type: 'line'
         },
         style: {
             border: {
                 fg: 'green'
-            },
-            focus: {
-                border: {
-                    fg: 'brightgreen'
-                }
             }
         },
-        label: ' Command (type "help" for commands, "quit" to exit) '
+        label: ' Command (type and press Enter) ',
+        content: '> '
     });
 
     // Append elements to screen
@@ -96,46 +89,86 @@ function createInterface() {
 
     // Input handling
     let commandCallback = null;
+    let currentInput = '';
+    let lastKeySequence = null;
+    let lastKeyTime = 0;
 
-    inputBox.on('submit', (value) => {
-        if (value.trim()) {
-            // Handle quit command directly in UI
-            if (value.trim().toLowerCase() === 'quit' || value.trim().toLowerCase() === 'exit') {
-                screen.destroy();
-                process.exit(0);
+    // Listen to raw keypress events
+    screen.on('keypress', (ch, key) => {
+        const sequence = key.sequence || ch || key.name;
+        const now = Date.now();
+
+        //solution for repeating characters when key is pressed
+        if (sequence && sequence === lastKeySequence && (now - lastKeyTime) < 30) {
+            return;
+        }
+
+        if (sequence) {
+            lastKeySequence = sequence;
+            lastKeyTime = now;
+        }
+
+        // Handle Ctrl+C / Escape
+        if ((key.name === 'c' && key.ctrl) || key.name === 'escape') {
+            screen.destroy();
+            process.exit(0);
+            return;
+        }
+        
+        // Handle Enter - submit command
+        if (key.name === 'enter' || key.name === 'return') {
+            if (currentInput.trim()) {
+                const cmd = currentInput.trim();
+                
+                // Handle quit
+                if (cmd.toLowerCase() === 'quit' || cmd.toLowerCase() === 'exit') {
+                    screen.destroy();
+                    process.exit(0);
+                }
+                
+                if (commandCallback) {
+                    commandCallback(cmd);
+                }
             }
             
-            if (commandCallback) {
-                commandCallback(value);
-            }
+            currentInput = '';
+            inputBox.setContent('> ');
+            screen.render();
+            return;
         }
-        inputBox.clearValue();
-        inputBox.focus();
-        screen.render();
+        
+        // Handle Backspace
+        if (key.name === 'backspace') {
+            if (currentInput.length > 0) {
+                currentInput = currentInput.slice(0, -1);
+                inputBox.setContent('> ' + currentInput);
+                screen.render();
+            }
+            return;
+        }
+        
+        // Handle regular characters
+        if (ch && key.name !== 'space' && !key.ctrl && !key.meta) {
+            currentInput += ch;
+            inputBox.setContent('> ' + currentInput);
+            screen.render();
+        } else if (key.name === 'space') {
+            currentInput += ' ';
+            inputBox.setContent('> ' + currentInput);
+            screen.render();
+        }
     });
 
-    // Multiple quit shortcuts
-    screen.key(['escape', 'C-c'], () => {
-        screen.destroy();
-        process.exit(0);
-    });
-
-    // Focus input initially
-    inputBox.focus();
     
-    // Initial render
     screen.render();
 
-    // API exposed to other modules
     return {
         log(message) {
             const timestamp = new Date().toLocaleTimeString();
             const logMessage = `[${timestamp}] ${message}`;
             
-            // Add to logs array
             logs.push(logMessage);
             
-            // Keep only last 100 logs
             if (logs.length > 100) {
                 logs.shift();
             }
@@ -143,7 +176,6 @@ function createInterface() {
             // Update log box content
             logBox.setContent(logs.join('\n'));
             
-            // Scroll to bottom
             logBox.setScrollPerc(100);
             
             // Force render
