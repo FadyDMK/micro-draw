@@ -16,7 +16,7 @@ async function tryGet(url) {
 }
 
 async function verifyUserByToken(token) {
-    const url = `${UserServiceURL}/tokens/${token}`;
+    const url = `${UserServiceURL}/users/tokens/${token}`;
     const data = await tryGet(url);
     if (data && (data.userId || data.username)) return data;
 
@@ -24,7 +24,7 @@ async function verifyUserByToken(token) {
 }
 
 async function verifyUserById(userId) {
-    const url = `${UserServiceURL}/user/${userId}`;
+    const url = `${UserServiceURL}/users/${userId}`;
     const data = await tryGet(url);
     if (data && data.id) return data;
     return null;
@@ -51,9 +51,13 @@ async function joinRoom(req, res) {
         if (userData && userData.userId) {
             userData = await verifyUserById(userData.userId);
         }
-    } else if (userId) {
+    }
+
+    if (!userData && userId) {
         userData = await verifyUserById(userId);
-    } else {
+    }
+
+    if (!token && !userId) {
         return res.status(400).send('Either token or userId is required');
     }
 

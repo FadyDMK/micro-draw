@@ -12,7 +12,6 @@ interface RoomListProps {
 
 function RoomList({ token, userId, onGameStart }: RoomListProps) {
     const [rooms, setRooms] = useState<Room[]>([]);
-    const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [newRoomName, setNewRoomName] = useState('');
@@ -25,16 +24,22 @@ function RoomList({ token, userId, onGameStart }: RoomListProps) {
         return () => clearInterval(interval);
     }, []);
 
+    // If a room we are in gets a gameId, auto-enter the game
+    useEffect(() => {
+        const myReadyRoom = rooms.find(r => r.gameId && r.players.some(p => p.id === userId));
+        if (myReadyRoom?.gameId) {
+            onGameStart(myReadyRoom.gameId);
+        }
+    }, [rooms, userId, onGameStart]);
+
     const loadRooms = async () => {
         try {
-            setLoading(true);
-            const RoomList = await roomService.listRooms();
-            setRooms(RoomList);
+            const roomList = await roomService.listRooms();
+            setRooms(roomList);
             setError('');
         } catch (err: any) {
             setError(err.message || 'Failed to load rooms');
         } finally {
-            setLoading(false);
         }
     };
 
@@ -78,14 +83,6 @@ function RoomList({ token, userId, onGameStart }: RoomListProps) {
         } finally {
             setJoining(null);
         }
-
-        if (loading) {
-            return (
-                <div>
-                    <div>Loading available rooms...</div>
-                </div>
-            )
-        }
     };
 
     return (
@@ -102,7 +99,7 @@ function RoomList({ token, userId, onGameStart }: RoomListProps) {
 
             {error && (
                 <div className="error-banner">
-                    ❌ {error}
+                    {error}
                 </div>
             )}
 
@@ -122,19 +119,19 @@ function RoomList({ token, userId, onGameStart }: RoomListProps) {
                                 <div className="room-header">
                                     <h3 className="room-name">{room.name}</h3>
                                     <span className={`room-status ${isFull ? 'full' : 'open'}`}>
-                                        {isFull ? '🔴 Full' : '🟢 Open'}
+                                        {isFull ? 'Full' : 'Open'}
                                     </span>
                                 </div>
 
                                 <div className="room-info">
                                     <div className="player-count">
-                                        👥 {room.players.length}/2 players
+                                        {room.players.length}/2 players
                                     </div>
                                     {room.players.length > 0 && (
                                         <div className="player-list">
-                                            {room.players.map((p: string) => (
-                                                <span key={p} className="player-tag">
-                                                    {p}
+                                            {room.players.map((p: Player) => (
+                                                <span key={p.id} className="player-tag">
+                                                    {p.username}
                                                 </span>
                                             ))}
                                         </div>

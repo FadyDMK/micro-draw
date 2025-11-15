@@ -35,6 +35,7 @@ export interface GameContext {
   turnNumber: number;
   totalTurns: number;
   turnEndsAt: number | null;
+  gameOver: boolean;
 }
 
 export interface ChatMessage {
@@ -144,7 +145,7 @@ export interface ErrorMessage extends WSMessage {
 export interface Room {
   id: string;
   name: string;
-  players: string[];
+  players: Player[];
   gameId?: string;
 }
 export type GameMessage =

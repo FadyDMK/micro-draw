@@ -1,0 +1,267 @@
+.game-info {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.game-over {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.game-over h2 {
+  margin: 0 0 16px 0;
+  font-size: 32px;
+  color: #333;
+}
+
+.winner-text {
+  font-size: 20px;
+  color: #28a745;
+}
+
+.winner-text strong {
+  color: #155724;
+  font-size: 24px;
+}
+
+.tie-text {
+  font-size: 20px;
+  color: #666;
+}
+
+.turn-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.turn-number {
+  font-size: 16px;
+  font-weight: 600;
+  color: #666;
+}
+
+.timer {
+  font-size: 24px;
+  font-weight: 700;
+  color: #28a745;
+}
+
+.timer.warning {
+  color: #dc3545;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.role-info {
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.role-drawer, .role-guesser {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.role-drawer {
+  background: #d4edda;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.role-guesser {
+  background: #fff3cd;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.role-icon {
+  font-size: 32px;
+}
+
+.role-label {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.word-display {
+  font-size: 24px;
+  font-weight: 700;
+  color: #155724;
+}
+
+.word-hint {
+  font-size: 24px;
+  font-weight: 700;
+  color: #856404;
+  letter-spacing: 4px;
+}
+
+.scores h3 {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.score-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.score-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.player-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.player-score {
+  font-weight: 700;
+  color: #667eea;
+  font-size: 18px;
+}
+
+@media (max-width: 768px) {
+  .game-info {
+    padding: 12px;
+    gap: 12px;
+    border-radius: 8px;
+  }
+
+  .turn-info {
+    padding-bottom: 10px;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .turn-number {
+    font-size: 13px;
+  }
+
+  .timer {
+    font-size: 18px;
+  }
+
+  .role-drawer,
+  .role-guesser {
+    padding: 10px;
+  }
+
+  .role-label {
+    font-size: 12px;
+  }
+
+  .word-display,
+  .word-hint {
+    font-size: 18px;
+  }
+
+  .scores h3 {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .score-item {
+    padding: 8px 10px;
+  }
+
+  .player-name {
+    font-size: 13px;
+  }
+
+  .player-score {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+    .game-info {
+        padding: 10px;
+        gap: 10px;
+        border-radius: 6px;
+    }
+
+    .game-over {
+        padding: 16px 10px;
+    }
+
+    .game-over h2 {
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+
+    .winner-text {
+        font-size: 15px;
+    }
+
+    .winner-text strong {
+        font-size: 17px;
+    }
+
+    .turn-info {
+        padding-bottom: 8px;
+        gap: 8px;
+    }
+
+    .turn-number {
+        font-size: 12px;
+    }
+
+    .timer {
+        font-size: 16px;
+    }
+
+    .role-drawer,
+    .role-guesser {
+        padding: 8px;
+    }
+
+    .role-label {
+        font-size: 11px;
+        margin-bottom: 2px;
+    }
+
+    .word-display,
+    .word-hint {
+        font-size: 16px;
+        letter-spacing: 2px;
+    }
+
+    .scores h3 {
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .score-item {
+        padding: 8px;
+    }
+
+    .player-name {
+        font-size: 12px;
+    }
+
+    .player-score {
+        font-size: 14px;
+    }
+}

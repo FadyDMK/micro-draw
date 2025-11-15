@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Login from './components/Login';
 import RoomList from './components/RoomList';
+import Game from './components/Game';
 import './App.css';
 
 type AppState = 'login' | 'rooms' | 'game';
@@ -40,11 +41,15 @@ function App() {
   }
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Game Started!</h1>
-      <p>Game ID: {gameId}</p>
-      <p>(Next: Build Game component)</p>
-    </div>
+    <Game
+      token={token!}
+      userId={userId!}
+      gameId={gameId!}
+      onLeave={() => {
+        setGameId(null);
+        setAppState('rooms');
+      }}
+    />
   );
 }
 

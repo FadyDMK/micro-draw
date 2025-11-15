@@ -7,11 +7,13 @@ interface UseWebSocketOptions {
     onOpen?: () => void;
     onClose?: () => void;
     onError?: (error: Event) => void;
+    userId?: string;
 }
 
-export const userGameWebSocket = (options: UseWebSocketOptions) => {
+export const useGameWebSocket = (options: UseWebSocketOptions) => {
     const [isConnected, setIsConnected] = useState(false);
     const wsRef = useRef<WebSocket | null>(null);
+    const pendingRef = useRef<any[]>([]);
 
     useEffect(() => {
         const ws = new WebSocket(config.GAME_ENGINE_URL);
@@ -19,6 +21,18 @@ export const userGameWebSocket = (options: UseWebSocketOptions) => {
 
         ws.onopen = () => {
             console.log("WebSocket connected");
+            // Flush any pending messages (preserve order)
+            if (pendingRef.current.length) {
+                for (const msg of pendingRef.current) {
+                    try {
+                        ws.send(JSON.stringify(msg));
+                        console.log("WebSocket message sent:", msg);
+                    } catch (e) {
+                        console.error("Failed to flush pending WS message:", e);
+                    }
+                }
+                pendingRef.current = [];
+            }
             setIsConnected(true);
             options.onOpen?.();
         };
@@ -48,19 +62,22 @@ export const userGameWebSocket = (options: UseWebSocketOptions) => {
         };
     }, []);
     const sendMessage = (message: any) => {
-        if (wsRef.current?.readyState === WebSocket.OPEN) {
-            wsRef.current.send(JSON.stringify(message));
+        const ws = wsRef.current;
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify(message));
             console.log("WebSocket message sent:", message);
-        } else {
-            console.error("WebSocket is not connected. Unabled to send message");
+            return;
         }
+        // Queue until connection opens
+        pendingRef.current.push(message);
+        console.warn("WebSocket not open yet. Queued message:", message);
     };
     const authenticate = (token: string) => {
         sendMessage({ type: "auth", token });
     };
 
     const joinGame = (gameId: string) => {
-        sendMessage({ type: "join-game", gameId });
+        sendMessage({ type: "join-game", gameId, userId: options.userId });
     };
 
     const draw = (x: number, y: number, color: string = "white") => {

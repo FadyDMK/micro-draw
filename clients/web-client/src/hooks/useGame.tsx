@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { userGameWebSocket } from './useWebSocket';
+import { useGameWebSocket } from './useWebSocket';
 import type {
   GameMessage,
   GameContext as GameContextType,
@@ -11,6 +11,7 @@ import type {
 interface GameProviderProps {
   token: string;
   gameId: string;
+  userId: string;
   children: ReactNode;
 }
 
@@ -27,7 +28,7 @@ interface GameContextValue extends GameContextType {
 
 const GameContext = createContext<GameContextValue | null>(null);
 
-export const GameProvider = ({ token, gameId, children }: GameProviderProps) => {
+export const GameProvider = ({ token, gameId, userId, children }: GameProviderProps) => {
   const [gameContext, setGameContext] = useState<GameContextType>({
     gameId: null,
     players: [],
@@ -43,6 +44,7 @@ export const GameProvider = ({ token, gameId, children }: GameProviderProps) => 
     turnNumber: 0,
     totalTurns: 0,
     turnEndsAt: null,
+    gameOver: false,
   });
 
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
@@ -147,7 +149,7 @@ export const GameProvider = ({ token, gameId, children }: GameProviderProps) => 
           ...prev,
           {
             from: 'SYSTEM',
-            message: `${gameContext.playersMap[message.guesserId] || message.guesserId} guessed "${message.word}" correctly! 🎉`,
+            message: `${gameContext.playersMap[message.guesserId] || message.guesserId} guessed "${message.word}" correctly!`,
             timestamp: Date.now(),
           },
         ]);
@@ -167,9 +169,9 @@ export const GameProvider = ({ token, gameId, children }: GameProviderProps) => 
 
         let endMessage = '';
         if (message.reason === 'timeout') {
-          endMessage = `⌛ Time's up! The word was "${message.word}"`;
+          endMessage = `Time's up! The word was "${message.word}"`;
         } else if (message.reason === 'guessed' && message.guesserId) {
-          endMessage = `🎉 ${gameContext.playersMap[message.guesserId] || 'Someone'} guessed it right!`;
+          endMessage = `${gameContext.playersMap[message.guesserId] || 'Someone'} guessed it right!`;
         }
 
         if (endMessage) {
@@ -186,6 +188,7 @@ export const GameProvider = ({ token, gameId, children }: GameProviderProps) => 
           turnActive: false,
           canDraw: false,
           scores: message.scores || prev.scores,
+          gameOver: true,
         }));
 
         const winnerNames = message.winnerIds.map(
@@ -195,7 +198,7 @@ export const GameProvider = ({ token, gameId, children }: GameProviderProps) => 
           ...prev,
           {
             from: 'SYSTEM',
-            message: `🏁 Game Over! Winner${winnerNames.length > 1 ? 's' : ''}: ${winnerNames.join(', ')}`,
+            message: `Game Over! Winner${winnerNames.length > 1 ? 's' : ''}: ${winnerNames.join(', ')}`,
             timestamp: Date.now(),
           },
         ]);
@@ -205,7 +208,7 @@ export const GameProvider = ({ token, gameId, children }: GameProviderProps) => 
         setCanvasPoints([]);
         setChatMessages((prev) => [
           ...prev,
-          { from: 'SYSTEM', message: '🧹 Canvas cleared for next turn', timestamp: Date.now() },
+          { from: 'SYSTEM', message: 'Canvas cleared for next turn', timestamp: Date.now() },
         ]);
         break;
 
@@ -219,8 +222,9 @@ export const GameProvider = ({ token, gameId, children }: GameProviderProps) => 
     }
   };
 
-  const { isConnected, authenticate, joinGame, draw, drawLine, sendChat } = userGameWebSocket({
+  const { isConnected, authenticate, joinGame, draw, drawLine, sendChat } = useGameWebSocket({
     onMessage: handleMessage,
+    userId,
   });
 
   // Authenticate and join game when connected

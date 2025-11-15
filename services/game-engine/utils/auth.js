@@ -5,7 +5,7 @@ async function verifyToken(token) {
     if (!token) return null;
 
     try{
-        const response = await axios.get(`${USER_SERVICE_URL}/tokens/${encodeURIComponent(token)}`, { timeout: 2000 });
+        const response = await axios.get(`${USER_SERVICE_URL}/users/tokens/${encodeURIComponent(token)}`, { timeout: 2000 });
         return response.data && response.data.userId ? response.data.userId : null;
     } catch (error) {
         return null;

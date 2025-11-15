@@ -3,7 +3,7 @@ const { USER_SERVICE_URL } = require('../config/config');
 
 async function login(username, password) {
     try {
-        const reponse = await axios.post(`${USER_SERVICE_URL}/login`,
+        const reponse = await axios.post(`${USER_SERVICE_URL}/users/login`,
             { username, password },
             { timeout: 2000 });
         return reponse.data;
@@ -16,7 +16,7 @@ async function login(username, password) {
 }
 async function register(username, password) {
     try {
-        const reponse = await axios.post(`${USER_SERVICE_URL}/register`,
+        const reponse = await axios.post(`${USER_SERVICE_URL}/users/register`,
             { username, password },
             { timeout: 2000 });
         return reponse.data;

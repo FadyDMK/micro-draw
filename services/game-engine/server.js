@@ -1,10 +1,12 @@
 const express = require('express');
+const cors = require('cors');
 const http = require('http');
 const { initWebSocketServer } = require('./websocket/wsServer');
 const gamesController = require('./controllers/gamesController');
 const port = process.env.PORT || 5000;
 
 const app = express();
+app.use(cors()); // Enable CORS for all routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

@@ -75,16 +75,14 @@ function createInterface() {
         content: '> '
     });
 
-    // Append elements to screen
     screen.append(canvasBox);
     screen.append(logBox);
     screen.append(inputBox);
 
-    // Create canvas
     const canvas = new Canvas(40, 20);
     canvasBox.setContent(canvas.render());
 
-    // Log storage
+    //log storage
     let logs = [];
 
     // Input handling
@@ -108,14 +106,12 @@ function createInterface() {
             lastKeyTime = now;
         }
 
-        // Handle Ctrl+C / Escape
         if ((key.name === 'c' && key.ctrl) || key.name === 'escape') {
             screen.destroy();
             process.exit(0);
             return;
         }
         
-        // Handle Enter - submit command
         if (key.name === 'enter' || key.name === 'return') {
             if (currentInput.trim()) {
                 const cmd = currentInput.trim();

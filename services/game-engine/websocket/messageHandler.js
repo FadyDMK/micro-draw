@@ -243,7 +243,7 @@ async function handleMessage(ws, raw) {
     }
 
     if (!ws.userId) {
-        return send(ws, { error: 'Not authenticated' });
+        return send(ws, { type: 'error', error: 'Not authenticated' });
     }
 
     if (msg.type === 'join-game') {

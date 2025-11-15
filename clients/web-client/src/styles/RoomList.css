@@ -257,3 +257,88 @@
   cursor: not-allowed;
   transform: none;
 }
+@media (max-width: 768px) {
+    .room-list-container {
+        padding: 30px 15px 30px;
+        
+    }
+
+    .room-list-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .room-list-header h1 {
+        font-size: 28px;
+    }
+
+    .create-room-btn {
+        width: 100%;
+    }
+
+    .rooms-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .room-card {
+        padding: 20px;
+    }
+
+    .room-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .room-name {
+        font-size: 18px;
+    }
+
+    .join-btn {
+        font-size: 15px;
+    }
+
+    .modal {
+        padding: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .room-list-container {
+        padding: 16px 12px 32px;
+    }
+
+    .room-list-header h1 {
+        font-size: 24px;
+    }
+
+    .loading,
+    .empty-state {
+        margin: 60px auto;
+        font-size: 20px;
+    }
+
+    .player-tag {
+        font-size: 11px;
+        padding: 4px 10px;
+    }
+
+    .modal {
+        width: 95%;
+    }
+
+    .modal h2 {
+        font-size: 20px;
+    }
+
+    .modal input {
+        font-size: 15px;
+    }
+
+    .cancel-btn,
+    .submit-btn {
+        font-size: 15px;
+        padding: 10px;
+    }
+}

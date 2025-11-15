@@ -1,0 +1,202 @@
+.game-layout {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.game-header {
+  padding: 20px 40px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.game-header h1 {
+  margin: 0;
+  font-size: 28px;
+  color: #333;
+  font-weight: 700;
+}
+
+.leave-button {
+  padding: 10px 20px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.leave-button:hover {
+  background: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.game-loading {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+  padding: 40px;
+}
+
+.game-loading p {
+  font-size: 20px;
+  margin: 16px 0;
+}
+
+.game-loading-hint {
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.game-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.game-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.game-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+@media (max-width: 480px) {
+  .game-layout {
+    min-height: 100svh;
+  }
+
+  .game-header {
+    padding: 8px 10px;
+  }
+
+  .game-header h1 {
+    font-size: 14px;
+  }
+
+  .leave-button {
+    padding: 5px 10px;
+    font-size: 10px;
+  }
+
+  .game-content {
+    padding: 6px;
+    border-radius: 6px;
+    gap: 6px;
+    margin: 6px;
+    max-height: calc(100svh - 50px);
+  }
+
+  .right-panel {
+    gap: 6px;
+  }
+}
+
+.game-content {
+  flex: 1;
+  padding: 40px;
+  max-width: 1600px;
+  width: 100%;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 40px;
+  overflow: visible;
+}
+
+.left-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (max-width: 1200px) {
+  .game-content {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .game-layout {
+    min-height: 100vh;
+    min-height: 100svh;
+  }
+
+  .game-header {
+    padding: 10px 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .game-header h1 {
+    font-size: 16px;
+  }
+
+  .leave-button {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+
+  .game-content {
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    border-radius: 8px;
+    gap: 8px;
+    margin: 8px;
+    max-height: calc(100vh - 60px);
+    max-height: calc(100svh - 60px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  .left-panel {
+    order: 1;
+  }
+
+  .right-panel {
+    order: 2;
+    gap: 8px;
+  }
+}
