@@ -10,7 +10,9 @@
   "author": "Fady Damak",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^5.1.0",
+    "react-use-websocket": "^4.13.0",
     "uuid": "^13.0.0"
   },
   "description": ""

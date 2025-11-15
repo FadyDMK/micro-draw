@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const roomsController = require('../controllers/roomsController');
 
-router.post('/rooms/create', roomsController.createRoom);
-router.post('/rooms/join/:roomId', roomsController.joinRoom);
-router.get('/rooms/:roomId', roomsController.getRoom);
-router.get('/rooms', roomsController.listRooms);
+router.post('/create', roomsController.createRoom);
+router.post('/join/:roomId', roomsController.joinRoom);
+router.get('/:roomId', roomsController.getRoom);
+router.get('/', roomsController.listRooms);
 
 module.exports = router;
